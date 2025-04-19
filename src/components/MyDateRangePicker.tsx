@@ -33,42 +33,35 @@ export default function MyDateRangePicker() {
         boxShadow: "0 10px 20px rgba(0,0,0,0.1)",
       }}
     >
-      <Typography variant="h5" my={1} sx={{ textAlign: "center" }}>
-        Оберіть період:
-      </Typography>
-
+      <Stack
+        direction={"row"}
+        gap={2}
+        sx={{ alignItems: "center", justifyContent: "start" }}
+      >
+        <IconButton
+          size="large"
+          onClick={() => setCalendarOpen((prev) => !prev)}
+          sx={{
+            backgroundColor: "inherit",
+            transition: "all 0.2s ease",
+          }}
+        >
+          <CalendarMonthIcon
+            color={calendarOpen ? "success" : "disabled"}
+            fontSize="large"
+          />
+        </IconButton>
+        <Typography variant="h5">Оберіть період:</Typography>
+      </Stack>
       <Stack
         sx={{
-          gap: 1,
+          gap: 2,
           py: 2,
           mb: 2,
           flexDirection: { xs: "column", md: "row" },
           justifyContent: "center",
         }}
       >
-        <Stack
-          direction="row"
-          justifyContent="center"
-          alignItems="center"
-          gap={1}
-        >
-          <IconButton
-            size="large"
-            onClick={() => setCalendarOpen((prev) => !prev)}
-            sx={{
-              backgroundColor: "inherit",
-              transition: "all 0.2s ease",
-              "&:hover": {
-                backgroundColor: "#f5f5f5/50%",
-              },
-            }}
-          >
-            <CalendarMonthIcon
-              color={calendarOpen ? "success" : "disabled"}
-              fontSize="large"
-            />
-          </IconButton>
-        </Stack>
         <DateTimeField
           endAdornment={
             <IconButton
@@ -80,6 +73,7 @@ export default function MyDateRangePicker() {
           }
           label="Дата, час початку"
           value={value[0]}
+          onFocus={() => setCalendarOpen(true)}
           onChange={(newDate) => setValue([newDate, value[1]])}
           format="DD-MM-YYYY HH:mm"
           disablePast
@@ -101,6 +95,7 @@ export default function MyDateRangePicker() {
           }
           label="Дата, час завершення"
           value={value[1]}
+          onFocus={() => setCalendarOpen(true)}
           onChange={(newDate) => setValue([value[0], newDate])}
           format="DD-MM-YYYY HH:mm"
           disablePast
