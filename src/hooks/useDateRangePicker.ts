@@ -27,7 +27,7 @@ const useDateRangePicker = () => {
 
     const newStart = start
       ? start.isSame(today, "day")
-        ? dayjs().add(1, "second")
+        ? dayjs().add(1, "minute")
         : start.startOf("day")
       : null;
 
