@@ -46,14 +46,14 @@ export default function MyDateRangePicker() {
         boxShadow: "0 10px 20px rgba(0,0,0,0.1)",
       }}
     >
-      <Typography variant="h5" my={2} sx={{ textAlign: "center" }}>
+      <Typography variant="h5" my={1} sx={{ textAlign: "center" }}>
         Оберіть період:
       </Typography>
 
       <Stack
         sx={{
           gap: 2,
-          p: 2,
+          py: 2,
           mb: 2,
           flexDirection: { xs: "column", md: "row" },
           justifyContent: "center",
@@ -203,11 +203,12 @@ export default function MyDateRangePicker() {
                 setCalendarOpen(false);
               }}
             >
-              Відмінти
+              Відмінити
             </Button>
             <Button
               sx={{ color: "success.main" }}
               onClick={() => setCalendarOpen(false)}
+              disabled={!value[0] || !value[1]}
             >
               Підтвердити
             </Button>
