@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers-pro";
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
 import MuiXLicense from "../components/MuiXLicense";
+import "dayjs/locale/uk";
 
 interface Props {
   children: ReactNode;
