@@ -4,7 +4,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import { Typography, Paper, Divider, Stack } from "@mui/material";
-import { DateField, DateRangeCalendar } from "@mui/x-date-pickers-pro";
+import { DateRangeCalendar, DateTimeField } from "@mui/x-date-pickers-pro";
 import ActionButton from "./ActionButton";
 import useDateRangePicker from "@/hooks/useDateRangePicker";
 import { calendarStyles } from "@/utils/calendarStyles";
@@ -13,7 +13,6 @@ export default function MyDateRangePicker() {
   const {
     value,
     setValue,
-    activeField,
     calendarOpen,
     setCalendarOpen,
     clearField,
@@ -40,7 +39,7 @@ export default function MyDateRangePicker() {
 
       <Stack
         sx={{
-          gap: 2,
+          gap: 1,
           py: 2,
           mb: 2,
           flexDirection: { xs: "column", md: "row" },
@@ -70,7 +69,7 @@ export default function MyDateRangePicker() {
             />
           </IconButton>
         </Stack>
-        <DateField
+        <DateTimeField
           endAdornment={
             <IconButton
               onClick={() => clearField("start")}
@@ -79,11 +78,10 @@ export default function MyDateRangePicker() {
               {value[0] ? <CloseIcon /> : <EditIcon />}
             </IconButton>
           }
-          label="Дата початку"
+          label="Дата, час початку"
           value={value[0]}
           onChange={(newDate) => setValue([newDate, value[1]])}
-          format="DD-MM-YYYY"
-          disabled={activeField !== "start"}
+          format="DD-MM-YYYY HH:mm"
           disablePast
           InputProps={{
             sx: {
@@ -92,7 +90,7 @@ export default function MyDateRangePicker() {
             },
           }}
         />
-        <DateField
+        <DateTimeField
           endAdornment={
             <IconButton
               onClick={() => clearField("end")}
@@ -101,12 +99,11 @@ export default function MyDateRangePicker() {
               {value[1] ? <CloseIcon /> : <EditIcon />}
             </IconButton>
           }
-          label="Дата завершення"
+          label="Дата, час завершення"
           value={value[1]}
           onChange={(newDate) => setValue([value[0], newDate])}
-          format="DD-MM-YYYY"
+          format="DD-MM-YYYY HH:mm"
           disablePast
-          disabled={activeField !== "end"}
           InputProps={{
             sx: {
               borderRadius: "12px",
