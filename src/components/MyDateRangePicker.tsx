@@ -191,8 +191,6 @@ export default function MyDateRangePicker() {
           </Stack>
           <Stack
             direction={"row"}
-            // justifyItems={"center"}
-            // alignItems={"center"}
             justifyContent={"space-around"}
             gap={2}
             width={"100%"}
