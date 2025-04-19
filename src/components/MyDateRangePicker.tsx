@@ -1,39 +1,27 @@
 "use client";
-import { Button, Collapse, IconButton } from "@mui/material";
+import { Collapse, IconButton } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
-import { useState } from "react";
 import { Typography, Paper, Divider, Stack } from "@mui/material";
 import { DateField, DateRangeCalendar } from "@mui/x-date-pickers-pro";
-import { DateRange } from "@mui/x-date-pickers-pro";
-import dayjs, { Dayjs } from "dayjs";
-import "dayjs/locale/uk";
-
-dayjs.locale("uk");
+import ActionButton from "./ActionButton";
+import useDateRangePicker from "@/hooks/useDateRangePicker";
+import { calendarStyles } from "@/utils/calendarStyles";
 
 export default function MyDateRangePicker() {
-  const [activeField, setActiveField] = useState<"start" | "end" | null>(null);
-  const [value, setValue] = useState<DateRange<Dayjs>>([null, null]);
-  const [calendarOpen, setCalendarOpen] = useState(false);
-
-  const handleClearField = (field: "start" | "end") => {
-    if (field === "start") {
-      setValue([null, value[1]]);
-    } else {
-      setValue([value[0], null]);
-    }
-    setActiveField(field);
-    setCalendarOpen(true);
-  };
-
-  const handleCalendarChange = (newValue: DateRange<Dayjs>) => {
-    setValue(newValue);
-    if (newValue[0] && newValue[1]) {
-      setActiveField(null);
-      // setCalendarOpen(false);
-    }
-  };
+  const {
+    value,
+    setValue,
+    activeField,
+    calendarOpen,
+    setCalendarOpen,
+    clearField,
+    disabledApply,
+    handleCalendarChange,
+    handleClickCancel,
+    handleClickApply,
+  } = useDateRangePicker();
 
   return (
     <Paper
@@ -85,7 +73,7 @@ export default function MyDateRangePicker() {
         <DateField
           endAdornment={
             <IconButton
-              onClick={() => handleClearField("start")}
+              onClick={() => clearField("start")}
               sx={{ borderRadius: "50%" }}
             >
               {value[0] ? <CloseIcon /> : <EditIcon />}
@@ -107,7 +95,7 @@ export default function MyDateRangePicker() {
         <DateField
           endAdornment={
             <IconButton
-              onClick={() => handleClearField("end")}
+              onClick={() => clearField("end")}
               sx={{ borderRadius: "50%" }}
             >
               {value[1] ? <CloseIcon /> : <EditIcon />}
@@ -115,7 +103,6 @@ export default function MyDateRangePicker() {
           }
           label="Дата завершення"
           value={value[1]}
-          // onFocus={() => setCalendarOpen(true)}
           onChange={(newDate) => setValue([value[0], newDate])}
           format="DD-MM-YYYY"
           disablePast
@@ -152,67 +139,14 @@ export default function MyDateRangePicker() {
               dayOfWeekFormatter={(day) => `${day.format("dd")}`.toUpperCase()}
               onChange={handleCalendarChange}
               calendars={1}
-              sx={{
-                background: "inherit",
-                boxShadow: "0 10px 20px rgba(0,0,0,0.1)",
-                ".MuiPickersCalendarHeader-label": {
-                  textTransform: "capitalize",
-                  fontSize: "18px",
-                  fontWeight: "600",
-                  color: "#29303F",
-                },
-                ".MuiDayCalendar-weekDayLabel": {
-                  textTransform: "capitalize",
-                  fontSize: "13px",
-                  color: "#757575",
-                },
-                ".MuiPickersDay-root": {
-                  fontSize: "13px",
-                },
-                ".Mui-selected": {
-                  backgroundColor: "inherit !important",
-                  fontWeight: "600",
-                  border: "1px solid lightgray",
-                  boxShadow: "0 10px 20px rgba(0,0,0,0.1)",
-                },
-                ".MuiPickersDay-root.Mui-selected:hover": {
-                  backgroundColor: "inherit !important",
-                  boxShadow: "0 10px 20px rgba(0,0,0,0.1)",
-                },
-                ".MuiPickersDay-root.Mui-selected": {
-                  backgroundColor: "inherit !important",
-                  boxShadow: "0 10px 20px rgba(0,0,0,0.1)",
-                },
-                ".MuiPickersDay-today": {
-                  border: "1px solid lightgray !important",
-                },
-              }}
+              sx={calendarStyles}
             />
           </Stack>
-          <Stack
-            direction={"row"}
-            justifyContent={"space-around"}
-            gap={2}
-            width={"100%"}
-            pt={{ xs: 2, md: 4 }}
-          >
-            <Button
-              sx={{ color: "error.main" }}
-              onClick={() => {
-                setValue([null, null]);
-                setCalendarOpen(false);
-              }}
-            >
-              Відмінити
-            </Button>
-            <Button
-              sx={{ color: "success.main" }}
-              onClick={() => setCalendarOpen(false)}
-              disabled={!value[0] || !value[1]}
-            >
-              Підтвердити
-            </Button>
-          </Stack>
+          <ActionButton
+            handleClickCancel={handleClickCancel}
+            handleClickApply={handleClickApply}
+            disabledApplyButton={disabledApply}
+          />
         </Stack>
       </Collapse>
     </Paper>
