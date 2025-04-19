@@ -1,6 +1,8 @@
 "use client";
-import { Collapse, IconButton } from "@mui/material";
+import { Button, Collapse, IconButton } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import CloseIcon from "@mui/icons-material/Close";
+import EditIcon from "@mui/icons-material/Edit";
 import { useState } from "react";
 import { Typography, Paper, Divider, Stack } from "@mui/material";
 import { DateField, DateRangeCalendar } from "@mui/x-date-pickers-pro";
@@ -11,8 +13,27 @@ import "dayjs/locale/uk";
 dayjs.locale("uk");
 
 export default function MyDateRangePicker() {
+  const [activeField, setActiveField] = useState<"start" | "end" | null>(null);
   const [value, setValue] = useState<DateRange<Dayjs>>([null, null]);
   const [calendarOpen, setCalendarOpen] = useState(false);
+
+  const handleClearField = (field: "start" | "end") => {
+    if (field === "start") {
+      setValue([null, value[1]]);
+    } else {
+      setValue([value[0], null]);
+    }
+    setActiveField(field);
+    setCalendarOpen(true);
+  };
+
+  const handleCalendarChange = (newValue: DateRange<Dayjs>) => {
+    setValue(newValue);
+    if (newValue[0] && newValue[1]) {
+      setActiveField(null);
+      // setCalendarOpen(false);
+    }
+  };
 
   return (
     <Paper
@@ -38,12 +59,43 @@ export default function MyDateRangePicker() {
           justifyContent: "center",
         }}
       >
+        <Stack
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          gap={1}
+        >
+          <IconButton
+            size="large"
+            onClick={() => setCalendarOpen((prev) => !prev)}
+            sx={{
+              backgroundColor: "inherit",
+              transition: "all 0.2s ease",
+              "&:hover": {
+                backgroundColor: "#f5f5f5/50%",
+              },
+            }}
+          >
+            <CalendarMonthIcon
+              color={calendarOpen ? "success" : "disabled"}
+              fontSize="large"
+            />
+          </IconButton>
+        </Stack>
         <DateField
+          endAdornment={
+            <IconButton
+              onClick={() => handleClearField("start")}
+              sx={{ borderRadius: "50%" }}
+            >
+              {value[0] ? <CloseIcon /> : <EditIcon />}
+            </IconButton>
+          }
           label="Дата початку"
           value={value[0]}
-          onFocus={() => setCalendarOpen(true)}
           onChange={(newDate) => setValue([newDate, value[1]])}
           format="DD-MM-YYYY"
+          disabled={activeField !== "start"}
           disablePast
           InputProps={{
             sx: {
@@ -53,12 +105,21 @@ export default function MyDateRangePicker() {
           }}
         />
         <DateField
+          endAdornment={
+            <IconButton
+              onClick={() => handleClearField("end")}
+              sx={{ borderRadius: "50%" }}
+            >
+              {value[1] ? <CloseIcon /> : <EditIcon />}
+            </IconButton>
+          }
           label="Дата завершення"
           value={value[1]}
-          onFocus={() => setCalendarOpen(true)}
+          // onFocus={() => setCalendarOpen(true)}
           onChange={(newDate) => setValue([value[0], newDate])}
           format="DD-MM-YYYY"
           disablePast
+          disabled={activeField !== "end"}
           InputProps={{
             sx: {
               borderRadius: "12px",
@@ -67,29 +128,8 @@ export default function MyDateRangePicker() {
           }}
         />
       </Stack>
+      {calendarOpen && <Divider sx={{ mb: 2 }} />}
 
-      <Divider sx={{ mb: 2 }} />
-      <Stack
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-        gap={1}
-      >
-        <IconButton
-          onClick={() => setCalendarOpen((prev) => !prev)}
-          sx={{
-            border: "1px solid lightgray",
-            borderRadius: "8px",
-            backgroundColor: "inherit",
-            transition: "all 0.2s ease",
-            "&:hover": {
-              backgroundColor: "#f5f5f5/50%",
-            },
-          }}
-        >
-          <CalendarMonthIcon color={calendarOpen ? "success" : "disabled"} />
-        </IconButton>
-      </Stack>
       <Collapse in={calendarOpen}>
         <Stack
           sx={{
@@ -110,7 +150,7 @@ export default function MyDateRangePicker() {
               disablePast
               value={value}
               dayOfWeekFormatter={(day) => `${day.format("dd")}`.toUpperCase()}
-              onChange={(newValue) => setValue(newValue)}
+              onChange={handleCalendarChange}
               calendars={1}
               sx={{
                 background: "inherit",
@@ -148,6 +188,31 @@ export default function MyDateRangePicker() {
                 },
               }}
             />
+          </Stack>
+          <Stack
+            direction={"row"}
+            // justifyItems={"center"}
+            // alignItems={"center"}
+            justifyContent={"space-around"}
+            gap={2}
+            width={"100%"}
+            pt={{ xs: 2, md: 4 }}
+          >
+            <Button
+              sx={{ color: "error.main" }}
+              onClick={() => {
+                setValue([null, null]);
+                setCalendarOpen(false);
+              }}
+            >
+              Відмінти
+            </Button>
+            <Button
+              sx={{ color: "success.main" }}
+              onClick={() => setCalendarOpen(false)}
+            >
+              Підтвердити
+            </Button>
           </Stack>
         </Stack>
       </Collapse>
